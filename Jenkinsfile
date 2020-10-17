@@ -6,6 +6,9 @@ pipeline{
         }
     }
     stages{
+        stage("Test") {
+            ssh "mvn test"
+        }
         stage("build"){
             steps{
                 sh "mvn -B -DskipTests clean package"
@@ -22,10 +25,28 @@ pipeline{
                 }
             }
         }
+        stage("Deliver"){
+            steps{
+                sh "./jenkins/scripts/deliver.sh"
+            }
+            post{
+                always{
+                    echo "====++++always++++===="
+                }
+                success{
+                    echo "====++++ executed successfully++++===="
+                }
+                failure{
+                    echo "====++++ execution failed++++===="
+                }
+        
+            }
+        }
     }
     post{
         always{
             echo "========always========"
+            junit "target/surefire-reports/*.xml"
         }
         success{
             echo "========pipeline executed successfully ========"
