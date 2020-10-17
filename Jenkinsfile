@@ -7,7 +7,9 @@ pipeline{
     }
     stages{
         stage("Test") {
-            ssh "mvn test"
+            steps{
+                sh "mvn test"
+            }
         }
         stage("build"){
             steps{
